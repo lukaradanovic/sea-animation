@@ -1,0 +1,267 @@
+dim 150 100
+
+ang_picture 0 0 150 100
+ang_origin 75 50
+ang_unit 5
+
+
+number thicklines 0
+number fullcolor 0
+
+
+if_then_else {fullcolor > 0}
+{
+number bgR 102
+number bgG 204
+number bgB 255
+
+number seaR 51
+number seaG 102
+number seaB 153
+
+number waveR 255
+number waveG 255
+number waveB 255
+
+number sunR 255
+number sunG 255
+number sunB 0
+
+number islandR 255
+number islandG 209
+number islandB 101
+
+number treeR 97
+number treeG 67
+number treeB 33
+
+number leafR 0
+number leafG 255
+number leafB 0
+
+number birdR 255
+number birdG 255
+number birdB 255
+}
+{
+number bgR 0
+number bgG 0
+number bgB 255
+
+number inkR 255
+number inkG 255
+number inkB 255
+
+number seaR bgR
+number seaG bgG
+number seaB bgB
+
+number waveR inkR
+number waveG inkG
+number waveB inkB
+
+number sunR inkR
+number sunG inkG
+number sunB inkB
+
+number islandR inkR
+number islandG inkG
+number islandB inkB
+
+number treeR inkR
+number treeG inkG
+number treeB inkB
+
+number leafR inkR
+number leafG inkG
+number leafB inkB
+
+number birdR inkR
+number birdG inkG
+number birdB inkB
+}
+
+background bgR bgG bgB
+
+
+
+number pi 3.141
+number waveY -7
+point T 0 0 3.141 1
+getx time T
+
+
+%sun
+color sunR sunG sunB
+if_then_else {thicklines} 
+{
+linethickness 1
+point sunCenter 130 75
+point sunPoint 134 75
+fillcircle sunCenter sunPoint
+}{normal}
+
+expression sunRotAng {time / 2}
+number r1 0.2
+expression r2 {r1*5.5} 
+number sunX 11
+number sunY 5
+expression sunBeat {sin(10*time)/10}
+
+ang_draw_parametric_curve t {0;t < 4*pi; t+0.1}
+{(((r2-r1)*cos(t)+r1*cos(((r2-r1)/r1)*t))*(sunBeat+1))*cos(sunRotAng) - (((r2-r1)*sin(t)-r1*sin(((r2-r1)/r1)*t))*(sunBeat+1))*sin(sunRotAng) + sunX;
+(((r2-r1)*cos(t)+r1*cos(((r2-r1)/r1)*t))*(sunBeat+1))*sin(sunRotAng) + (((r2-r1)*sin(t)-r1*sin(((r2-r1)/r1)*t))*(sunBeat+1))*cos(sunRotAng) + sunY}
+normal
+
+
+
+%island
+
+color islandR islandG islandB
+if_then_else {thicklines > 0} 
+{
+linethickness 3
+number islandW 15
+number islandH 8
+point islandC 30 45
+fillellipse islandC islandW islandH 
+} {normal} 
+
+%bezier curve points
+number islandX0 -5.67
+number islandY0 0.01
+number islandX1 -6.76
+number islandY1 -0.19
+number islandX2 -10.46
+number islandY2 3.24
+number islandX3 -12.12
+number islandY3 -0.02
+ang_draw_parametric_curve t {0; t < 1; t+0.01}
+{
+-0.2*(pow((1-t), 3)*islandX0 + 3*pow((1-t),2)*t*islandX1 + 3*(1-t)*pow(t,2)*islandX2 + 3*pow(t,3)*islandX3)-13;
+(pow((1-t), 3)*islandY0 + 3*pow((1-t),2)*t*islandY1 + 3*(1-t)*pow(t,2)*islandY2 + 3*pow(t,3)*islandY3) - 1
+}
+
+%tree
+color treeR treeG treeB
+
+if_then_else {thicklines > 0} {linethickness 3.5} {normal} 
+
+ang_draw_parametric_curve t 
+{-1; t < 2; t+0.1}
+{(-0.06*t*t - 10.6)  ; 
+(t*0.6 + waveY + 7.8)}
+ang_draw_parametric_curve t 
+{0; t < 3; t+0.1}
+{(-0.1*t*t - 10)  ; 
+(t*0.6 + waveY + 7.4)}
+
+
+expression leafAngAdd {0.1*sin(time*10)}
+expression leafAng {-pi/4 + leafAngAdd}
+
+%leaves
+color leafR leafG leafB
+
+if_then_else {thicklines > 0} {linethickness 2.4} {normal} 
+
+ang_draw_parametric_curve t
+{0; t < pi;t + 0.1}
+{-0.5*(t*cos(leafAng) - sin(t)*sin(leafAng)) - 10.8; 0.5*(sin(leafAng)*t + cos(leafAng)*sin(t)) + waveY + 9.1}
+ang_draw_parametric_curve t
+{0; t < pi;t + 0.1}
+{-0.5*(t*cos(leafAng)) - 10.8; 0.5*(sin(leafAng)*t) + waveY + 9.1}
+expression leafAng {-pi/4 + 1 + leafAngAdd}
+ang_draw_parametric_curve t
+{0; t < pi;t + 0.1}
+{0.5*(t*cos(leafAng) - sin(t)*sin(leafAng)) - 10.8; 0.5*(sin(leafAng)*t + cos(leafAng)*sin(t)) + waveY + 9.1}
+ang_draw_parametric_curve t
+{0; t < pi;t + 0.1}
+{0.5*(t*cos(leafAng)) - 10.8; 0.5*(sin(leafAng)*t) + waveY + 9.1}
+expression leafAng {1 + leafAngAdd}
+ang_draw_parametric_curve t
+{0; t < pi;t + 0.1}
+{0.5*(t*cos(leafAng) - sin(t)*sin(leafAng)) - 10.8; 0.5*(sin(leafAng)*t + cos(leafAng)*sin(t)) + waveY + 9.1}
+ang_draw_parametric_curve t
+{0; t < pi;t + 0.1}
+{0.5*(t*cos(leafAng)) - 10.8; 0.5*(sin(leafAng)*t) + waveY + 9.1}
+expression leafAng {0 + leafAngAdd}
+ang_draw_parametric_curve t
+{pi; t > 0;t - 0.1}
+{-0.5*(t*cos(leafAng) - sin(t)*sin(leafAng)) - 10.8; 0.5*(sin(leafAng)*t + cos(leafAng)*sin(t)) + waveY + 9.1}
+ang_draw_parametric_curve t
+{0; t < pi;t + 0.1}
+{-0.5*(t*cos(leafAng)) - 10.8; 0.5*(sin(leafAng)*t) + waveY + 9.1}
+
+normal
+
+
+% fill sea
+point seaLL 0 0
+point seaUR 150 45
+color seaR seaG seaB
+fillrectangle seaLL seaUR
+
+
+
+%waves
+expression f {20*time}
+expression len {0.5}
+
+expression waveAmpl1 {0.6*sin(15*time+0.2)}
+expression waveAmpl2 {sin(15*time+pi/2)}
+expression waveAmpl3 {sin(15*time+0.8)}
+
+color  waveR waveG waveB
+
+if_then_else {thicklines > 0} {linethickness 1} {normal} 
+
+
+ang_draw_parametric_curve t {-10*pi;t<10*pi;t + 0.1}{t;waveY+6}
+
+
+ang_draw_parametric_curve t {-10*pi;t<10*pi;t + 0.1}{t;0.3*(waveAmpl1*sin(len*t-f) + waveAmpl1*cos(len*t-f))+waveY+4.5}
+
+ang_draw_parametric_curve t {-10*pi;t<10*pi;t + 0.1}{t;0.5*(waveAmpl2*sin(len*t-f))+waveY+3}
+ang_draw_parametric_curve t {-10*pi;t<10*pi;t + 0.1}{t;0.9*(waveAmpl1*cos(len*t-f))+waveY+1}
+ang_draw_parametric_curve t {-10*pi;t<10*pi;t + 0.1}{t;waveAmpl2*sin(len*t-f-pi)+waveY}
+ang_draw_parametric_curve t {-10*pi;t<10*pi;t + 0.1}{t;waveAmpl3*cos(len*t-f-pi)+waveY-2}
+
+normal
+
+%birds
+expression wingAngAdd {0.3*sin(time*20)}
+expression wingAng {0 + wingAngAdd}
+expression birdX {-2 + time*1.5}
+expression birdY {13}
+expression bird2X {birdX - 2.5}
+expression bird2Y {birdY - 1}
+
+color birdR birdG birdB
+
+if_then_else {thicklines > 0} {linethickness 1} {normal} 
+
+ang_draw_parametric_curve t
+{pi; t > 0;t - 0.1}
+{-0.2*(t*cos(wingAng) - sin(t)*sin(wingAng)) + birdX; 0.2*(sin(wingAng)*t + cos(wingAng)*sin(t)) + waveY + birdY}
+ang_draw_parametric_curve t
+{0; t < pi;t + 0.1}
+{0.2*(t*cos(wingAng) - sin(t)*sin(wingAng)) + birdX; 0.2*(sin(wingAng)*t + cos(wingAng)*sin(t)) + waveY + birdY}
+
+ang_draw_parametric_curve t
+{pi; t > 0;t - 0.1}
+{-0.2*(t*cos(wingAng) - sin(t)*sin(wingAng)) + bird2X; 0.2*(sin(wingAng)*t + cos(wingAng)*sin(t)) + waveY + bird2Y}
+ang_draw_parametric_curve t
+{0; t < pi;t + 0.1}
+{0.2*(t*cos(wingAng) - sin(t)*sin(wingAng)) + bird2X; 0.2*(sin(wingAng)*t + cos(wingAng)*sin(t)) + waveY + bird2Y}
+
+normal
+
+
+
+animation_frames 200 100
+
+
+
+
+
