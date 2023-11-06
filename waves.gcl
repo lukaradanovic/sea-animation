@@ -5,8 +5,8 @@ ang_origin 75 50
 ang_unit 5
 
 
-number thicklines 0
-number fullcolor 0
+number thicklines 1
+number fullcolor 1
 
 
 if_then_else {fullcolor > 0}
